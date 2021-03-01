@@ -180,6 +180,19 @@ ENV PATH $PATH:/usr/lib/postgresql/$PG_MAJOR/bin
 ENV PGDATA /var/lib/postgresql/data
 # this 777 will be replaced by 700 at runtime (allows semi-arbitrary "--user" values)
 RUN mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA"
+
+RUN apt-get update
+RUN apt-get install sudo -y
+RUN sudo apt-get install protobuf-c-compiler
+RUN sudo apt-get install libprotobuf-c-dev
+RUN apt-get install git
+RUN apt-get install make
+RUN apt-get install gcc
+RUN sudo apt install postgresql-server-dev-13
+RUN git clone https://github.com/citusdata/cstore_fdw
+RUN cd cstore_fdw && PATH=/usr/bin/:$PATH mak && sudo PATH=/usr/bin/:$PATH make install
+
+
 VOLUME /var/lib/postgresql/data
 
 COPY docker-entrypoint.sh /usr/local/bin/
